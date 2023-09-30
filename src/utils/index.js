@@ -21,4 +21,6 @@ export const API_URLS = {
   userInfo: (userId) => `${API_ROOT}/users/${userId}`,
   searchUsers: (searchText) => `${API_ROOT}/users/search?text=${searchText}`,
 };
-S
+
+
+export const CODEIAL_AUTHORIZATION_KEY = "__codeial_auth_key__";
