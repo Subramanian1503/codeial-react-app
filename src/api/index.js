@@ -1,0 +1,8 @@
+customFetch = () => {
+
+}
+
+
+getPosts = () => {
+    
+}
