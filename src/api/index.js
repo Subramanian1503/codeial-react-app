@@ -1,6 +1,6 @@
-import { CODEIAL_AUTHORIZATION_KEY } from '../utils/index';
+import { CODEIAL_AUTHORIZATION_KEY, API_URLS } from '../utils/index';
 
-const customFetch = async (url, customConfig) => {
+const customFetch = async (url, { body, ...customConfig }) => {
   // Get the authorization token from the local storage
   const token = window.localStorage.getItem(CODEIAL_AUTHORIZATION_KEY);
 
@@ -31,20 +31,27 @@ const customFetch = async (url, customConfig) => {
 
   // call fetch
   try {
-    const response = fetch(url, config);
+    // Fetch data from server using URL and configurations passed
+    const response = await fetch(url, config);
+    
+    // Conver the data into JSON to use the retrieved informations
     const data = await response.json();
 
-    if (response.success) {
+    // If response is success then return the data
+    if (data.success) {
       return {
         data: data.data,
         success: true,
       };
     }
 
+    // Throw exception if the response status is failure
     throw new Error(data.message);
   } catch (error) {
+    // Logging the error message
     console.log(error);
 
+    // Return failure error response with success status as false
     return {
       message: error.message,
       success: false,
@@ -52,4 +59,10 @@ const customFetch = async (url, customConfig) => {
   }
 };
 
-const getPosts = () => {};
+// Get all the posts based on limit and page size
+export const getPosts = (page = 1, limit = 5) => {
+  // Trigger cutom fetch API to fecth data of page requested and with the given limit
+  return customFetch(API_URLS.posts(page, limit), {
+    method: 'GET',
+  });
+};
