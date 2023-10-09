@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styles from '../styles/navbar.module.css';
 
 const Navbar = () => {
@@ -27,7 +28,7 @@ const Navbar = () => {
         <div className={styles.navLinks}>
           <ul>
             <li>
-              <a href="/">Log in</a>
+              <Link to="/login">Log in</Link>
             </li>
             <li>
               <a href="/">Log out</a>

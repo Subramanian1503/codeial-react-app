@@ -1,4 +1,5 @@
 import { CODEIAL_AUTHORIZATION_KEY, API_URLS } from '../utils/index';
+import { getFormBody } from '../utils/index';
 
 const customFetch = async (url, { body, ...customConfig }) => {
   // Get the authorization token from the local storage
@@ -6,8 +7,7 @@ const customFetch = async (url, { body, ...customConfig }) => {
 
   // construct headers object with content-type and Accept
   const headers = {
-    'content-type': 'application/json',
-    Accept: 'application/json',
+    'content-type': 'application/x-www-form-urlencoded',
   };
 
   // set authorization token in headers if token is present
@@ -26,14 +26,16 @@ const customFetch = async (url, { body, ...customConfig }) => {
 
   // if body is present set the body to config
   if (body) {
-    config.body = JSON.stringify(body);
+    config.body = getFormBody(body);
   }
 
   // call fetch
   try {
     // Fetch data from server using URL and configurations passed
+    console.log('url', url);
+    console.log('config', config);
     const response = await fetch(url, config);
-    
+
     // Conver the data into JSON to use the retrieved informations
     const data = await response.json();
 
@@ -63,6 +65,23 @@ const customFetch = async (url, { body, ...customConfig }) => {
 export const getPosts = (page = 1, limit = 5) => {
   // Trigger cutom fetch API to fecth data of page requested and with the given limit
   return customFetch(API_URLS.posts(page, limit), {
+    method: 'GET',
+  });
+};
+
+// Login the user using the provided email and password
+export const login = (email, password) => {
+  return customFetch(API_URLS.login(), {
+    method: 'POST',
+    body: {
+      email,
+      password,
+    },
+  });
+};
+
+export const userInfo = (userId) => {
+  return customFetch(API_URLS.userInfo(userId), {
     method: 'GET',
   });
 };

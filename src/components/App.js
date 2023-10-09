@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { getPosts } from '../api';
-import { Home } from '../pages';
+import { Home, Login } from '../pages';
 import { Loader, Navbar } from '../components';
+import { BrowserRouter, Routes, Navigate } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [loader, setLoader] = useState(true);
+
+  const PageNotFound = () => {
+    return <h1>404</h1>;
+  };
 
   useEffect(() => {
     // Defining a function which call get posts method
@@ -28,8 +34,21 @@ function App() {
   } else {
     return (
       <div className="App">
-        <Navbar />
-        <Home posts={posts} />
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            {/* Defining Home route */}
+            <Route path="/" element={<Home posts={posts} />}></Route>
+
+            {/* Defining Login route */}
+            <Route path="/login" element={<Login />}></Route>
+
+            {/* Defining default route for 404 */}
+            <Route path="/404" element={<PageNotFound />}></Route>
+
+            <Route path="*" element={<Navigate to="/404" />}></Route>
+          </Routes>
+        </BrowserRouter>
       </div>
     );
   }
