@@ -1,11 +1,13 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { login as userLogin } from '../api';
 import { AuthContext } from '../providers/AuthProvider';
 import {
   setItemInLocalStorage,
   removeItemFromLocalStorage,
   CODEIAL_AUTHORIZATION_KEY,
+  getItemFromLocalStorage,
 } from '../utils';
+import jwt from 'jwt-decode';
 
 // Get the auth information from the auth context
 export const useAuth = () => {
@@ -15,8 +17,24 @@ export const useAuth = () => {
 // Defining user auth provider hook
 export const useAuthProvider = () => {
   // Define authentication information
-  const [user, setUser] = useState();
-  const [loading, setLoading] = useState();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Define a method to get user from JWT token present in the local storage
+  useEffect(() => {
+    // Getting JWT token from local storage
+    const jwt_token = getItemFromLocalStorage(CODEIAL_AUTHORIZATION_KEY);
+
+    if (jwt_token) {
+      // Decode the JWT token to the user
+      const user = jwt(jwt_token);
+
+      // Set the user information to the state
+      setUser(user);
+    }
+    // Set loading state
+    setLoading(false);
+  }, []);
 
   // Define the authentication related methods
   // Login

@@ -1,44 +1,29 @@
-import { useEffect, useState } from 'react';
-import { getPosts } from '../api';
 import { Home, Login } from '../pages';
 import { Loader, Navbar } from '../components';
 import { BrowserRouter, Routes, Navigate } from 'react-router-dom';
 import { Route } from 'react-router-dom';
+import { useAuth } from '../hooks';
 
 function App() {
-  const [posts, setPosts] = useState([]);
-  const [loader, setLoader] = useState(true);
+  // Check whether the user logged in
+  const auth = useAuth();
 
   const PageNotFound = () => {
     return <h1>404</h1>;
   };
 
-  useEffect(() => {
-    // Defining a function which call get posts method
-    const fetchPosts = async () => {
-      const response = await getPosts();
-
-      if (response.success) {
-        setPosts(response.data.posts);
-      }
-
-      setLoader(false);
-      return response;
-    };
-    // Call the function
-    fetchPosts();
-  }, []);
-
-  if (loader) {
+  if (auth.loading) {
+    console.log('Loading', auth.loading);
     return <Loader />;
   } else {
+    console.log('Loading', auth.loading);
     return (
       <div className="App">
         <BrowserRouter>
           <Navbar />
           <Routes>
             {/* Defining Home route */}
-            <Route path="/" element={<Home posts={posts} />}></Route>
+            <Route path="/" element={<Home />}></Route>
 
             {/* Defining Login route */}
             <Route path="/login" element={<Login />}></Route>
