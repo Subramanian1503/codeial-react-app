@@ -1,4 +1,4 @@
-import { Home, Login } from '../pages';
+import { Home, Login, SignUp } from '../pages';
 import { Loader, Navbar } from '../components';
 import { BrowserRouter, Routes, Navigate } from 'react-router-dom';
 import { Route } from 'react-router-dom';
@@ -30,6 +30,9 @@ function App() {
 
             {/* Defining default route for 404 */}
             <Route path="/404" element={<PageNotFound />}></Route>
+
+            {/* Define route for redirecting to signUp page */}
+            <Route path="/signUp" element={<SignUp />}></Route>
 
             <Route path="*" element={<Navigate to="/404" />}></Route>
           </Routes>

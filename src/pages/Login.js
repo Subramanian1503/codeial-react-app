@@ -2,6 +2,7 @@ import styles from '../styles/login.module.css';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useAuth } from '../hooks';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   // Defining states
@@ -9,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
   const authProvider = useAuth();
+  const navigate = useNavigate();
 
   const handleLoginFormSubmit = async (e) => {
     // Prevent the default behavior
@@ -24,12 +26,16 @@ const Login = () => {
     }
 
     // Log in the user using the provided email and password
-    const response = authProvider.login(email, password);
+    const response = await authProvider.login(email, password);
+
+    console.log(response);
 
     // check if the login was successfull
     if (response.success) {
       // if yes, say that is toasify notification
       toast.success('User login successfull');
+      // redirect to Home page
+      navigate('/');
     } else {
       // if not, then say the same to the user
       toast.error(response.message);
@@ -37,6 +43,8 @@ const Login = () => {
 
     //Set the logging in flag to false
     setLoggingIn(false);
+
+    // Navigate to home
   };
 
   return (

@@ -52,6 +52,7 @@ export const useAuthProvider = () => {
         CODEIAL_AUTHORIZATION_KEY,
         response.data.token ? response.data.token : null
       );
+      setLoading(false);
       return {
         success: true,
       };

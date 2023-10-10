@@ -80,8 +80,22 @@ export const login = (email, password) => {
   });
 };
 
+// Get user information using authtoken
 export const userInfo = (userId) => {
   return customFetch(API_URLS.userInfo(userId), {
     method: 'GET',
+  });
+};
+
+// Create user using the required information
+export const createUser = (name, email, password, confirmPassword) => {
+  return customFetch(API_URLS.signup(), {
+    method: 'POST',
+    body: {
+      name: name,
+      email: email,
+      password: password,
+      confirm_password: confirmPassword,
+    },
   });
 };
