@@ -21,13 +21,13 @@ const Navbar = () => {
         {/* show the user information only if it is available in auth context */}
         {auth.user && (
           <div className={styles.user}>
-            <a href="/">
+            <Link to="/settings">
               <img
                 src="https://cdn-icons-png.flaticon.com/128/4140/4140048.png"
-                alt=""
+                alt="user_dp"
                 className={styles.userDp}
               />
-            </a>
+            </Link>
             <span>{auth.user.name}</span>
           </div>
         )}

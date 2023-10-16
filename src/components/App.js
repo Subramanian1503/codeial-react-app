@@ -1,4 +1,4 @@
-import { Home, Login, SignUp } from '../pages';
+import { Home, Login, SignUp, Settings } from '../pages';
 import { Loader, Navbar } from '../components';
 import { BrowserRouter, Routes, Navigate } from 'react-router-dom';
 import { Route } from 'react-router-dom';
@@ -33,6 +33,9 @@ function App() {
 
             {/* Define route for redirecting to signUp page */}
             <Route path="/signUp" element={<SignUp />}></Route>
+
+            {/* Define route for redirecting to settings page */}
+            <Route path="/settings" element={<Settings />}></Route>
 
             <Route path="*" element={<Navigate to="/404" />}></Route>
           </Routes>
