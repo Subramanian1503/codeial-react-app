@@ -1,8 +1,8 @@
 import styles from '../styles/login.module.css';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { createUser } from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks';
 
 const SignUp = () => {
   // Create required states to store the values of the form entered by the user
@@ -12,6 +12,12 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [signingIn, setSigningIn] = useState(false);
   const navigate = useNavigate();
+  const auth = useAuth();
+
+  // If user logged in already route to home page
+  if (auth.user) {
+    return <Navigate to="/" />;
+  }
 
   // Define required methods to handle submit event
   const handleSubmitEvent = async (event) => {
@@ -23,14 +29,20 @@ const SignUp = () => {
     // Validate the user inputs with proper error message
     if (!name || !email || !password || !confirmPassword) {
       toast.error('Please enter all required information for sign up');
+      // Set signing in flag to flase
+      setSigningIn(false);
+      return;
     }
 
     if (password !== confirmPassword) {
       toast.error('Provided password and confirm password not matching');
+      // Set signing in flag to flase
+      setSigningIn(false);
+      return;
     }
 
     // execute API call to fetch information from server
-    const response = await createUser(name, email, password, confirmPassword);
+    const response = await auth.signUp(name, email, password, confirmPassword);
 
     if (response.success) {
       // if yes, say that is toasify notification

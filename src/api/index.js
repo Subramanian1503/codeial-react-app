@@ -99,3 +99,16 @@ export const createUser = (name, email, password, confirmPassword) => {
     },
   });
 };
+
+// Update user using the required information
+export const updateUser = (userId, name, password, confirmPassword) => {
+  return customFetch(API_URLS.editUser(), {
+    method: 'POST',
+    body: {
+      id: userId,
+      name: name,
+      password: password,
+      confirm_password: confirmPassword,
+    },
+  });
+};

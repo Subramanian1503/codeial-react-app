@@ -1,6 +1,7 @@
 import styles from '../styles/settings.module.css';
 import { useAuth } from '../hooks';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Settings = () => {
   // Get the authentication information from the context
@@ -8,14 +9,55 @@ const Settings = () => {
 
   // Declare a state for is in editProfile mode
   const [isEditProfileEnabled, setIsEditProfileEnabled] = useState(false);
-  const [name, setName] = useState(false);
-  const [password, setPassword] = useState(auth.user?.name);
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [saveForm, setSaveForm] = useState(false);
 
   // Event handlers
-  const handleEditProfile = () => {
-    setIsEditProfileEnabled(!isEditProfileEnabled);
+  const handleSaveProfile = async (event) => {
+    setSaveForm(true);
+
+    let error = false;
+
+    if (!name || !password || !confirmPassword) {
+      toast.error('Check if all required fields are provided');
+      error = true;
+    }
+
+    if (!error && password !== confirmPassword) {
+      toast.error('Password does not match with confirm password');
+      error = true;
+    }
+
+    if (error) {
+      setSaveForm(false);
+      return;
+    }
+
+    // Access editUser from auth and pass the values
+    const response = await auth.editUser(
+      auth.user._id,
+      name,
+      password,
+      confirmPassword
+    );
+
+    console.log('update user response', response);
+
+    // Check the resonse
+    if (response.success) {
+      setIsEditProfileEnabled(false);
+      setSaveForm(false);
+
+      // Notify user that user profile was saved successfully
+      return toast.success('User saved succesfully');
+    } else {
+      // Notify user that user profile was ended in error
+      toast.error(`Failed with error: ${response.error}`);
+    }
+
+    setSaveForm(false);
   };
 
   return (
@@ -42,7 +84,6 @@ const Settings = () => {
           <input
             type="text"
             className={styles.input}
-            value={auth.user?.name}
             onChange={(event) => setName(event.target.value)}
           />
         ) : (
@@ -70,7 +111,7 @@ const Settings = () => {
             <input
               className={styles.input}
               type="password"
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => setConfirmPassword(event.target.value)}
             />
           </div>
         </>
@@ -81,7 +122,10 @@ const Settings = () => {
         {isEditProfileEnabled ? (
           <>
             {/* save button */}
-            <button className={`button ${styles.saveBtn}`}>
+            <button
+              className={`button ${styles.saveBtn}`}
+              onClick={handleSaveProfile}
+            >
               {saveForm ? 'Saving Profile...' : 'Save Profile'}
             </button>
 
@@ -98,7 +142,9 @@ const Settings = () => {
             {/* edit button */}
             <button
               className={`button ${styles.editBtn}`}
-              onClick={handleEditProfile}
+              onClick={() => {
+                setIsEditProfileEnabled(!isEditProfileEnabled);
+              }}
             >
               Edit Profile
             </button>

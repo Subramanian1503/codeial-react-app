@@ -2,7 +2,7 @@ import styles from '../styles/login.module.css';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useAuth } from '../hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const Login = () => {
   // Defining states
@@ -11,6 +11,11 @@ const Login = () => {
   const [loggingIn, setLoggingIn] = useState(false);
   const authProvider = useAuth();
   const navigate = useNavigate();
+
+  // If user logged in already route to home page
+  if (authProvider.user) {
+    return <Navigate to="/" />;
+  }
 
   const handleLoginFormSubmit = async (e) => {
     // Prevent the default behavior
