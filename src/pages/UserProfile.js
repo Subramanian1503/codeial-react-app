@@ -1,7 +1,10 @@
 import styles from '../styles/settings.module.css';
+import { useLocation } from 'react-router-dom';
 
 const UserProfile = () => {
-  const user = {};
+  // Get access to the state passed from the link which can be accesed through useLocation hook
+  const { state } = useLocation();
+  const user = state.user;
 
   return (
     <div className={styles.settings}>
@@ -17,14 +20,14 @@ const UserProfile = () => {
       <div className={styles.field}>
         <div className={styles.fieldLabel}>Email</div>
 
-        <div className={styles.fieldValue}>{user.email}</div>
+        <div className={styles.fieldValue}>{user?.email}</div>
       </div>
 
       {/* name field */}
       <div className={styles.field}>
         <div className={styles.fieldLabel}>Name</div>
 
-        <div className={styles.fieldValue}>{user.name}</div>
+        <div className={styles.fieldValue}>{user?.name}</div>
       </div>
 
       {/* button group */}
