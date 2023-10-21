@@ -81,7 +81,7 @@ export const login = (email, password) => {
 };
 
 // Get user information using authtoken
-export const userInfo = (userId) => {
+export const fetchUser = (userId) => {
   return customFetch(API_URLS.userInfo(userId), {
     method: 'GET',
   });
