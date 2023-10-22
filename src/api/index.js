@@ -87,6 +87,27 @@ export const fetchUser = (userId) => {
   });
 };
 
+// Get friends of the user
+export const fetchFriends = () => {
+  return customFetch(API_URLS.friends(), {
+    method: 'GET',
+  });
+};
+
+// add friend of the user
+export const addFriend = (userId) => {
+  return customFetch(API_URLS.createFriendship(userId), {
+    method: 'POST',
+  });
+};
+
+// remove friend of the user
+export const removeFriend = (userId) => {
+  return customFetch(API_URLS.removeFriend(userId), {
+    method: 'POST',
+  });
+};
+
 // Create user using the required information
 export const createUser = (name, email, password, confirmPassword) => {
   return customFetch(API_URLS.signup(), {

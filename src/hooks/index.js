@@ -1,5 +1,10 @@
 import { useContext, useState, useEffect } from 'react';
-import { login as userLogin, createUser, updateUser } from '../api';
+import {
+  login as userLogin,
+  createUser,
+  updateUser,
+  fetchFriends,
+} from '../api';
 import { AuthContext } from '../providers/AuthProvider';
 import {
   setItemInLocalStorage,
@@ -22,18 +27,34 @@ export const useAuthProvider = () => {
 
   // Define a method to get user from JWT token present in the local storage
   useEffect(() => {
-    // Getting JWT token from local storage
-    const jwt_token = getItemFromLocalStorage(CODEIAL_AUTHORIZATION_KEY);
+    const getUser = async () => {
+      // Getting JWT token from local storage
+      const jwt_token = getItemFromLocalStorage(CODEIAL_AUTHORIZATION_KEY);
 
-    if (jwt_token) {
-      // Decode the JWT token to the user
-      const user = jwt(jwt_token);
+      if (jwt_token) {
+        // Decode the JWT token to the user
+        const user = jwt(jwt_token);
 
-      // Set the user information to the state
-      setUser(user);
-    }
-    // Set loading state
-    setLoading(false);
+        // Get friends of the user
+        const response = await fetchFriends();
+        let friendships = [];
+
+        if (response.success) {
+          friendships = response.data.friends;
+        }
+
+        // Set the user information to the state
+        setUser({
+          ...user,
+          friendships,
+        });
+
+        // Set loading state
+        setLoading(false);
+      }
+    };
+
+    getUser();
   }, []);
 
   // Define the authentication related methods
@@ -120,6 +141,27 @@ export const useAuthProvider = () => {
     }
   };
 
+  const updateUserFriendShip = (isAddFriend, friendship, userId) => {
+    if (isAddFriend) {
+      // Set the user state with new friend
+      if (friendship) {
+        setUser({
+          ...user,
+          friendships: [...user.friendships, friendship],
+        });
+      }
+    } else {
+      const updatedfriendShip = user.friendships.filter(
+        (friend) => friend._id !== userId
+      );
+      // Set the user state with new friend
+      setUser({
+        ...user,
+        friendships: updatedfriendShip,
+      });
+    }
+  };
+
   return {
     user,
     loading,
@@ -127,5 +169,6 @@ export const useAuthProvider = () => {
     logout,
     signUp,
     editUser,
+    updateUserFriendShip,
   };
 };

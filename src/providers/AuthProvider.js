@@ -7,6 +7,7 @@ const initialState = {
   logout: () => {},
   editUser: () => {},
   loading: true,
+  updateUserFriendShip: () => {},
 };
 
 // Creating Auth context component

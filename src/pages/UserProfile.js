@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Loader } from '../components';
 import { toast } from 'react-toastify';
-import { fetchUser } from '../api';
+import { addFriend, fetchUser, removeFriend } from '../api';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
@@ -14,9 +14,12 @@ const UserProfile = () => {
   // Declare the required states for this component
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState();
+  const [requestInProgress, setRequestInProgress] = useState();
 
   // Get current user profile information
   const auth = useAuth();
+
+  console.log('User', auth.user);
 
   // Declare useEffect to provide the user information by making a API call to the server
   useEffect(() => {
@@ -36,12 +39,12 @@ const UserProfile = () => {
         // Navigate the user to the home page
         return <Navigate to="/" />;
       }
+
+      // set loading is false
+      setLoading(false);
     };
     // Call the method
     getUser();
-
-    // set loading is false
-    setLoading(false);
   }, [userId]);
 
   // Create a method to find whether the current rendered user profile is the friend of the logged in user
@@ -52,10 +55,51 @@ const UserProfile = () => {
     // Get the friend ids of the user
     // console.log(currentUser);
     // return true;
-    const friendIds = currentUser.friendships.map((friend) => friend.to_user._id);
+
+    console.log();
+    const friendIds = currentUser.friendships.map(
+      (friend) => friend.to_user._id
+    );
 
     // Check if the current user profile id is a part of friend ids
     return friendIds.includes(userId);
+  };
+
+  const handleAddFriendClick = async () => {
+    setRequestInProgress(true);
+    // Make API call to create friendship of this user with current logged in user
+    const response = await addFriend(userId);
+    // Check the API response
+    // If Success, Update the state of the user in auth
+    if (response.success) {
+      const { friendship } = response.data;
+      auth.updateUserFriendShip(true, friendship);
+
+      // Toast the success notification
+      toast.success('Friend added successfully');
+    } else {
+      // Else, toast the error notification with the message received from the API
+      toast.error(`Failed with erro: ${response.message}`);
+    }
+    setRequestInProgress(false);
+  };
+
+  const handleRemoveFriendClick = async () => {
+    setRequestInProgress(true);
+    // Make API call to create friendship of this user with current logged in user
+    const response = await removeFriend(userId);
+    // Check the API response
+    // If Success, Update the state of the user in auth
+    if (response.success) {
+      auth.updateUserFriendShip(false, {}, userId);
+
+      // Toast the success notification
+      toast.success('Friend removed successfully');
+    } else {
+      // Else, toast the error notification with the message received from the API
+      toast.error(`Failed with error: ${response.message}`);
+    }
+    setRequestInProgress(false);
   };
 
   if (loading) {
@@ -89,11 +133,19 @@ const UserProfile = () => {
         <div className={styles.btnGrp}>
           {/* add friend button */}
           {isFriendOfCurrentUser() ? (
-            <button className={`button ${styles.saveBtn}`}>
-              Remove Friend
+            <button
+              className={`button ${styles.saveBtn}`}
+              onClick={handleRemoveFriendClick}
+            >
+              {requestInProgress ? 'Removing Friend...' : 'Remove Friend'}
             </button>
           ) : (
-            <button className={`button ${styles.saveBtn}`}>Add Friend</button>
+            <button
+              className={`button ${styles.saveBtn}`}
+              onClick={handleAddFriendClick}
+            >
+              {requestInProgress ? 'Adding Friend...' : 'Add Friend'}
+            </button>
           )}
         </div>
       </div>
