@@ -4,7 +4,7 @@ import './styles/index.css';
 import { App } from './components';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider } from './providers';
+import { AuthProvider, PostsProvider } from './providers';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -23,7 +23,9 @@ root.render(
       theme="light"
     />
     <AuthProvider>
-      <App />
+      <PostsProvider>
+        <App />
+      </PostsProvider>
     </AuthProvider>
   </React.StrictMode>
 );

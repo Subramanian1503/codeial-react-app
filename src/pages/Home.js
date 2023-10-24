@@ -1,34 +1,15 @@
 import styles from '../styles/home.module.css';
-import { Comment, FriendsList, Loader } from '../components';
-import { useState, useEffect } from 'react';
-import { getPosts } from '../api';
+import { Comment, CreatePost, FriendsList, Loader } from '../components';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks';
+import { useAuth, usePosts } from '../hooks';
 
 const Home = () => {
   // Defining the state for post to store it
-  const [posts, setPosts] = useState([]);
-  const [loader, setLoader] = useState(true);
   const auth = useAuth();
+  // Getting the posts from the created context
+  const posts = usePosts();
 
-  // Use Effect to fetch post from server
-  useEffect(() => {
-    // Defining a function which call get posts method
-    const fetchPosts = async () => {
-      const response = await getPosts();
-
-      if (response.success) {
-        setPosts(response.data.posts);
-      }
-
-      setLoader(false);
-      return response;
-    };
-    // Call the function
-    fetchPosts();
-  }, []);
-
-  if (loader) {
+  if (posts.loader) {
     return <Loader />;
   } else {
     // Define the JSX for Home page
@@ -36,7 +17,9 @@ const Home = () => {
       <div className={styles.home}>
         {/* posts-list */}
         <div className={styles.postsList}>
-          {posts.map((post) => (
+          {/* create post  */}
+          <CreatePost />
+          {posts.data.map((post) => (
             <div className={styles.postWrapper} key={post._id}>
               <div className={styles.postHeader}>
                 <div className={styles.postAvatar}>
@@ -62,7 +45,7 @@ const Home = () => {
                       src="https://cdn-icons-png.flaticon.com/128/126/126473.png"
                       alt="likes-icon"
                     />
-                    <span>5</span>
+                    <span>{post.likes.length}</span>
                   </div>
 
                   <div className={styles.postCommentsIcon}>

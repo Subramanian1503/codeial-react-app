@@ -131,3 +131,13 @@ export const updateUser = (userId, name, password, confirmPassword) => {
     },
   });
 };
+
+// Define a API to create post
+export const createPost = (content) => {
+  return customFetch(API_URLS.createPost(), {
+    method: 'POST',
+    body: {
+      content,
+    },
+  });
+};

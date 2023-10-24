@@ -1,3 +1,4 @@
 import { AuthProvider } from './AuthProvider';
+import { PostsProvider } from './PostsProvider';
 
-export { AuthProvider };
+export { AuthProvider, PostsProvider };

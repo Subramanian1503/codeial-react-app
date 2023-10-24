@@ -4,8 +4,10 @@ import {
   createUser,
   updateUser,
   fetchFriends,
+  getPosts,
 } from '../api';
 import { AuthContext } from '../providers/AuthProvider';
+import { PostsContext } from '../providers/PostsProvider';
 import {
   setItemInLocalStorage,
   removeItemFromLocalStorage,
@@ -170,5 +172,44 @@ export const useAuthProvider = () => {
     signUp,
     editUser,
     updateUserFriendShip,
+  };
+};
+
+export const usePosts = () => {
+  return useContext(PostsContext);
+};
+
+// Define the usePostsProvider hook so that this hook always return the posts, loading and a update method to update the state of the post
+export const usePostsProvider = () => {
+  const [posts, setPosts] = useState(null);
+  const [loader, setLoader] = useState(true);
+
+  // Use Effect to fetch post from server
+  useEffect(() => {
+    // Defining a function which call get posts method
+    const fetchPosts = async () => {
+      const response = await getPosts();
+
+      if (response.success) {
+        setPosts(response.data.posts);
+      }
+
+      setLoader(false);
+      return response;
+    };
+    // Call the function
+    fetchPosts();
+  }, []);
+
+  const updatePostsInState = (post) => {
+    const newPosts = [post, ...posts];
+    console.log('Post Added', newPosts);
+    setPosts(newPosts);
+  };
+
+  return {
+    data: posts,
+    loader,
+    updatePostsInState,
   };
 };
