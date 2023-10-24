@@ -56,10 +56,9 @@ const UserProfile = () => {
     // console.log(currentUser);
     // return true;
 
-    console.log();
-    const friendIds = currentUser.friendships.map(
-      (friend) => friend.to_user._id
-    );
+    const friendIds = currentUser.friendships
+      ? currentUser.friendships.map((friend) => friend.to_user._id)
+      : [];
 
     // Check if the current user profile id is a part of friend ids
     return friendIds.includes(userId);

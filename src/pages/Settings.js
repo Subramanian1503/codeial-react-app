@@ -43,8 +43,6 @@ const Settings = () => {
       confirmPassword
     );
 
-    console.log('update user response', response);
-
     // Check the resonse
     if (response.success) {
       setIsEditProfileEnabled(false);

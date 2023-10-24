@@ -32,8 +32,6 @@ const customFetch = async (url, { body, ...customConfig }) => {
   // call fetch
   try {
     // Fetch data from server using URL and configurations passed
-    console.log('url', url);
-    console.log('config', config);
     const response = await fetch(url, config);
 
     // Conver the data into JSON to use the retrieved informations

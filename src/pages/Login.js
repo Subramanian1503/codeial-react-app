@@ -33,8 +33,6 @@ const Login = () => {
     // Log in the user using the provided email and password
     const response = await authProvider.login(email, password);
 
-    console.log(response);
-
     // check if the login was successfull
     if (response.success) {
       // if yes, say that is toasify notification

@@ -22,10 +22,8 @@ function App() {
   };
 
   if (auth.loading) {
-    console.log('Loading', auth.loading);
     return <Loader />;
   } else {
-    console.log('Loading', auth.loading);
     return (
       <div className="App">
         <BrowserRouter>
