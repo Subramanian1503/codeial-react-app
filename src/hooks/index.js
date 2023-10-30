@@ -207,9 +207,27 @@ export const usePostsProvider = () => {
     setPosts(newPosts);
   };
 
+  // Add comment functionality
+  const addComment = (comment, postId) => {
+    // Find the post with provided Id
+    const newPosts = posts.map((post) => {
+      if (post._id === postId) {
+        return {
+          ...post,
+          comments: [...post.comments, comment],
+        };
+      }
+      return post;
+    });
+
+    // set the comment in the post
+    setPosts(newPosts);
+  };
+
   return {
     data: posts,
     loader,
     updatePostsInState,
+    addComment,
   };
 };
